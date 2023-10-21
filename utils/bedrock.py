@@ -37,8 +37,7 @@ def get_bedrock_client(
     session_kwargs = {"region_name": target_region}
     client_kwargs = {**session_kwargs}
 
-    profile_name = os.environ.get("AWS_PROFILE")
-    if profile_name:
+    if profile_name := os.environ.get("AWS_PROFILE"):
         print(f"  Using profile: {profile_name}")
         session_kwargs["profile_name"] = profile_name
 
@@ -63,11 +62,7 @@ def get_bedrock_client(
         client_kwargs["aws_secret_access_key"] = response["Credentials"]["SecretAccessKey"]
         client_kwargs["aws_session_token"] = response["Credentials"]["SessionToken"]
 
-    if runtime:
-        service_name='bedrock-runtime'
-    else:
-        service_name='bedrock'
-
+    service_name = 'bedrock-runtime' if runtime else 'bedrock'
     bedrock_client = session.client(
         service_name=service_name,
         config=retry_config,
